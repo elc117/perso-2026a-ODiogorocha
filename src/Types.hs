@@ -1,55 +1,76 @@
-module Types where 
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+
+module Types where
+
 import Data.Text (Text)
+import Data.Aeson (ToJSON, FromJSON)
+import GHC.Generics (Generic)
 
--- tipos validos 
-type PokemonTypesName = Text 
+data TeamMember = TeamMember
+  { name  :: Text
+  , types :: [Text]
+  } deriving (Show, Eq, Generic)
 
--- calcula e multiplica o dano recebido para um tipo dependendo do ataque
+instance ToJSON TeamMember
+instance FromJSON TeamMember
+
+data TeamRequest = TeamRequest
+  { team :: [TeamMember]
+  } deriving (Show, Eq, Generic)
+
+instance ToJSON TeamRequest
+instance FromJSON TeamRequest
 
 data DamageRelation = DamageRelation
-{
-    drType :: PokemonTypeName,
-    drMultiplier :: Double,
-}deriving (Show, Eq)
+  { drType       :: Text
+  , drMultiplier :: Double
+  } deriving (Show, Eq, Generic)
 
--- dados de um pokemon do time 
-data TeamMember = TeamMember
-{
-    memberName : Text,
-    memberType :: [PokemonTypeName], -- podem ser dois
-}deriving (Show, Eq)
+instance ToJSON DamageRelation
 
--- resultado da analise de fraquezas
 data WeaknessReport = WeaknessReport
-{
-    wrMember :: TeamMember,
-    wrWeaknesses :: [DamageRelation], -- multiplicadore maiores q 1.0
-    wrResistances :: [DamageRelation], -- multiplicadores menores q 1.0
-}deriving (Show, Eq)
+  { weaknesses  :: [DamageRelation]
+  , resistances :: [DamageRelation]
+  } deriving (Show, Eq, Generic)
 
--- Analisa o time
+instance ToJSON WeaknessReport
+
 data TeamAnalysis = TeamAnalysis
-{
-    taMembers :: [WeaknessReport],
-    taCoverageScore :: Double, --vai de 0.0 até 1.0
-    taUncoveredTypes :: [PokemonTypeName], --Tipos sem resistencias no time  
-}deriving (Show, Eq)
+  { membersAnalysis :: [MemberAnalysis]
+  , coverageScore   :: Double
+  , uncoveredTypes  :: [Text]
+  } deriving (Show, Eq, Generic)
 
--- sugerir novo membro
-data suggestion = suggestion
-{
-    suggestedType :: PokemonTypeName,
-    suggestedNames :: [Text],
-}deriving(Show, Eq)
+instance ToJSON TeamAnalysis
 
--- todos os 18 tipos do jogo 
-allTypes :: [PokemonTypeName]
-allTypes = 
-    [
-        "normal", "fire", "water", "electric",
-        "grass", "ice", "fighting", "poison",
-        "ground", "flying", "psychic", "bug",
-        "rock", "ghost", "dragon", "dark",
-        "steel", "fairy"
+data MemberAnalysis = MemberAnalysis
+  { maPokemon      :: TeamMember
+  , maWeaknesses   :: [DamageRelation]
+  , maResistances  :: [DamageRelation]
+  } deriving (Show, Eq, Generic)
 
-    ]
+instance ToJSON MemberAnalysis
+
+data Suggestion = Suggestion
+  { suggestedType  :: Text
+  , examplePokemon :: [Text]
+  , reason         :: Text
+  } deriving (Show, Eq, Generic)
+
+instance ToJSON Suggestion
+
+data SpriteUrl = SpriteUrl
+  { suName :: Text
+  , suUrl  :: Text
+  } deriving (Show, Eq, Generic)
+
+instance ToJSON SpriteUrl
+
+data FullResponse = FullResponse
+  { frAnalysis   :: TeamAnalysis
+  , frSuggestion :: Maybe Suggestion
+  , frSprites    :: [SpriteUrl]
+  } deriving (Show, Eq, Generic)
+
+instance ToJSON FullResponse

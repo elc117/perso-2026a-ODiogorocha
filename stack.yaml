@@ -1,7 +1,7 @@
-resolver: lts-22.28
-
+resolver: lts-22.33
 packages:
-  - .
-
+- .
 extra-deps:
-  - scotty-0.22
+- wai-cors-0.2.7
+ghc-options:
+  "$locals": -Wall
