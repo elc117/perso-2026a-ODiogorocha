@@ -1,10 +1,10 @@
 services:
   - type: web
     name: pokemon-analyzer
-    runtime: image
-    repo: https://github.com/elc117/perso-2026a-ODiogorocha/tree/main/pokemon_analyzer
+    runtime: docker
+    repo: https://github.com/elc117/perso-2026a-ODiogorocha
     plan: free
+    dockerfilePath: ./pokemon_analyzer/Dockerfile
     envVars:
       - key: PORT
         value: 3000
-
