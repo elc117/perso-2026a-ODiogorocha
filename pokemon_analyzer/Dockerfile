@@ -3,8 +3,8 @@ FROM fpco/stack-build:lts-22.33 AS builder
 
 WORKDIR /app
 
-# Copiar arquivos de configuração primeiro (para cache)
-COPY pokemon_analyzer/stack.yaml pokemon_analyzer/stack.yaml.lock pokemon_analyzer/*.cabal ./
+# Copiar arquivos de configuração (apenas os que existem)
+COPY pokemon_analyzer/stack.yaml pokemon_analyzer/*.cabal ./
 
 # Copiar o código fonte restante
 COPY pokemon_analyzer/ .
@@ -26,6 +26,8 @@ WORKDIR /app
 # Copiar binário e frontend
 COPY --from=builder /root/.local/bin/pokemon-analyzer-exe /app/pokemon-analyzer-exe
 COPY --from=builder /app/frontend.html /app/frontend.html
+
+RUN chmod +x /app/pokemon-analyzer-exe
 
 EXPOSE 3000
 
