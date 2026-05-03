@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: pokemon-analyzer
+    runtime: image
+    repo: https://github.com/elc117/perso-2026a-ODiogorocha
+    plan: free
+    envVars:
+      - key: PORT
+        value: 3000
