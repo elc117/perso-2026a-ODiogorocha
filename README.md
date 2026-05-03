@@ -85,7 +85,7 @@ stack test
 
 # Iniciar o servidor backend (porta 3000)
 stack run
-
+````
 ---
 
 ## 6. Deploy
@@ -108,92 +108,91 @@ Você também pode acrescentar uma breve explicação sobre o que está sendo de
 
 ### 8.1 Ferramentas de IA utilizadas
 
-Liste as principais ferramentas de IA utilizadas, com suas versões/modelos/planos. Por exemplo, ChatGPT Free com GPT-5.2 Thinking, GitHub Copilot com Gemini 2.0 Flash, Antigravity com Claude Sonnet 4.6 (Thinking), etc.
+ChatGPT (modelo GPT-4o, plano gratuito) – utilizado para gerar código inicial no frontend.
+
+GitHub Copilot (modelo Gemini 2.0 Flash) – utilizado para autocompletar funções repetitivas e gerar a tabela de efetividade de tipos.
+
+
 
 ---
 
 ### 8.2 Interações relevantes com IA
 
-Inclua **de 3 a 5 interações relevantes** com ferramentas de IA.
-
-
 #### Interação 1
+Objetivo da consulta: Corrigir erro de compilação envolvendo o tipo do body no Scotty (Couldn't match expected type ‘TL.Text’ with actual type ‘BSL.ByteString).
 
-- **Objetivo da consulta:**  
-- **Trecho do prompt ou resumo fiel:**  
-- **O que foi aproveitado:**  
-- **O que foi modificado ou descartado:**  
+Trecho do prompt ou resumo fiel: "Como resolver ‘Couldn't match expected type TL.Text with actual type BSL.ByteString’ no Scotty?"
+
+O que foi aproveitado: A sugestão de usar bodyBS <- body diretamente e aplicar eitherDecode.
+
+O que foi modificado ou descartado: A IA sugeriu usar jsonData, mas isso gerava erro 422. Adotamos a abordagem manual com eitherDecode e logs para depuração.
 
 #### Interação 2
+Objetivo da consulta: Resolver erro de parse JSON (key "trTeam" not found).
 
-- **Objetivo da consulta:**  
-- **Trecho do prompt ou resumo fiel:**  
-- **O que foi aproveitado:**  
-- **O que foi modificado ou descartado:**  
+Trecho do prompt ou resumo fiel: "O erro ‘key trTeam not found’ aparece. Como fazer o Aeson usar ‘team’?"
 
-#### Interação 3 
+O que foi aproveitado: A orientação de renomear o campo do record para team e ajustar as instâncias FromJSON/ToJSON.
 
-- **Objetivo da consulta:**  
-- **Trecho do prompt ou resumo fiel:**  
-- **O que foi aproveitado:**  
-- **O que foi modificado ou descartado:**  
+O que foi modificado ou descartado: A IA sugeriu escrever uma instância manual complexa; optamos por renomear o campo e usar DeriveGeneric, mais simples e direto.
 
-#### Interação 4 (opcional)
+#### Interação 3
+Objetivo da consulta: Melhorar o frontend para carregar todos os Pokémon da PokeAPI sem travar.
 
-- **Objetivo da consulta:**  
-- **Trecho do prompt ou resumo fiel:**  
-- **O que foi aproveitado:**  
-- **O que foi modificado ou descartado:**  
+Trecho do prompt ou resumo fiel: "Como fazer a Pokédex exibir todos os Pokémon (mais de 1000) sem travar o navegador?"
 
-#### Interação 5 (opcional)
+O que foi aproveitado: Estratégia de scroll infinito, cache de detalhes (pokemonCache) e carregamento assíncrono dos sprites.
 
-- **Objetivo da consulta:**  
-- **Trecho do prompt ou resumo fiel:**  
-- **O que foi aproveitado:**  
-- **O que foi modificado ou descartado:**  
+O que foi modificado ou descartado: A IA sugeriu usar IntersectionObserver (implementado) e também pré-carregar todos os dados em um array, o que foi descartado para evitar consumo excessivo de memória.
+
+#### Interação 4
+Objetivo da consulta: Entender como configurar o deploy no Render com Docker.
+
+Trecho do prompt ou resumo fiel: "Como criar um Dockerfile para uma aplicação Haskell com Stack e fazer deploy no Render?"
+
+O que foi aproveitado: Estrutura básica do Dockerfile em dois estágios (build e runtime) e o arquivo render.yaml.
+
+O que foi modificado ou descartado: A IA inicialmente sugeriu usar runtime: image, o que causou erro. Corrigimos para runtime: docker e especificamos o dockerfilePath.
+
+#### Interação 5
+Objetivo da consulta: Corrigir erro de stack.yaml.lock não encontrado durante o build no Render.
+
+Trecho do prompt ou resumo fiel: "Erro: ‘/pokemon_analyzer/stack.yaml.lock’: not found. Como resolver?"
+
+O que foi aproveitado: Remover a referência ao arquivo no Dockerfile, pois ele não está versionado.
+
+O que foi modificado ou descartado: A IA sugeriu adicionar o arquivo ao repositório, mas optamos por removê-lo do COPY por ser gerado automaticamente.
+ 
 
 ---
 
 ### 8.3 Exemplo de erro, limitação ou sugestão inadequada da IA
 
-Descreva **ao menos um caso** em que a IA:
+Caso: Quando tentei usar jsonData com TeamRequest, a IA afirmou que funcionaria, mas o servidor retornava erro 422. A sugestão não considerava que o campo do record (trTeam) não correspondia à chave "team" do JSON enviado pelo frontend. Precisei depurar manualmente com eitherDecode e logs para descobrir que a chave esperada era trTeam. A IA não identificou a raiz do problema, apenas sugeriu usar jsonData sem ajustar os nomes dos campos.
 
-- errou
-- foi incompleta
-- sugeriu algo inadequado ou incompreensível
-- produziu código que precisou de correção relevante
-
-Explique brevemente o que aconteceu e como você percebeu ou corrigiu o problema.
-
----
+Como corrigi: Renomeei o campo para team e adaptei o Logic.hs e Api.hs para usar name e types. Além disso, substituí jsonData por eitherDecode manual com logs detalhados.
 
 ### 8.4 Comentário pessoal sobre o processo envolvendo IA
+o uso da IA foi de grande ajuda para acelerar a escrita da tabela de efetividades e para a estrutura do frontend, mas em questões expecificas do Haskell a IA forneceu respostas erradas e incompletas fazendo com que o trabalho demorace mais que o necessario, depois de perceber os erros principalmente nas partes de tratamento como ByteString vs Text no Scotty eu preferi usar a IA como meio para fazer coisas repitidas mas na parte de codigo bruta acabei usando o ghci para depurar o codigo e achar erros 
 
-Escreva um breve comentário pessoal sobre o processo envolvendo IA.
 
-Você pode comentar, por exemplo:
-
-- algo que passou a compreender melhor
-- uma dificuldade que conseguiu superar
-- uma limitação que ainda sente
-- como o uso de IA ajudou ou atrapalhou em certos momentos.
 
 ---
 
 ## 9. Referências e créditos
 
-Liste referências e créditos de forma detalhada, com título e URL, incluindo, quando aplicável:
+Documentação do Scotty: https://hackage.haskell.org/package/scotty
 
-- sites consultados
-- documentações
-- materiais de aula
-- colegas
-- trechos de código adaptados
-- imagens, vídeos 
+Documentação do Aeson: https://hackage.haskell.org/package/aeson
 
-Exemplo:
+PokeAPI (dados de Pokémon): https://pokeapi.co/
 
-- Documentação do Scotty: ...
-- Documentação do Render: ...
-- Material de aula da disciplina: ...
-- Vídeo sobre Scotty: ...
+Material de aula da disciplina: Notas de aula sobre programação funcional e Scotty (Prof. [Andrea]).
+
+Render Deploy Guide: https://render.com/docs/deploy-haskell 
+
+Inspiração para a Pokédex: adaptação de exemplos de scroll infinito da MDN (https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+
+Código de exemplo de tabela de efetividade: baseado no conhecimento de tipos Pokémon da comunidade, com adaptações próprias.
+
+como meu sistema era parecido com a ideia do Gabriel Quadros tivemos uma conversa inicial de como poderiamos fazer 
