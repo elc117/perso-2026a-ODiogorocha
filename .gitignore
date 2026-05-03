@@ -11,3 +11,6 @@ cabal.project.local
 .ghc.environment.*
 *.exe
 stack.yaml.lock
+.stack-work/
+*.o
+*.hi
