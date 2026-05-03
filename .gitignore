@@ -1,0 +1,13 @@
+.stack-work/
+*.o
+*.hi
+*.dyn_hi
+*.dyn_o
+*.so
+*.a
+dist/
+dist-newstyle/
+cabal.project.local
+.ghc.environment.*
+*.exe
+stack.yaml.lock
