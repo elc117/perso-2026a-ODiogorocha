@@ -1,19 +1,19 @@
-# Estágio de build
+# Estágio de build (usando imagem oficial do Stack, baseada em Ubuntu 22.04)
 FROM fpco/stack-build:lts-22.33 AS builder
 
 WORKDIR /app
 
-# Copiar arquivos de configuração (apenas os que existem)
+# Copiar arquivos de configuração
 COPY pokemon_analyzer/stack.yaml pokemon_analyzer/*.cabal ./
 
-# Copiar o código fonte restante
+# Copiar código fonte
 COPY pokemon_analyzer/ .
 
 # Compilar
 RUN stack build --system-ghc --copy-bins
 
-# Estágio de runtime
-FROM ubuntu:focal
+# Estágio de runtime (usando Ubuntu 22.04 para compatibilidade de glibc)
+FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y \
     libgmp10 \
