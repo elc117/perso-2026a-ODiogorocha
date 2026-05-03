@@ -85,22 +85,45 @@ stack test
 
 # Iniciar o servidor backend (porta 3000)
 stack run
-````
+```
 ---
 
 ## 6. Deploy
 
-Link do serviço publicado: <complete aqui>
+**Link do serviço publicado:** [https://pokemon-analyzer-qv5g.onrender.com](https://pokemon-analyzer-qv5g.onrender.com)
 
-Descreva de forma breve como você realizou o deploy a partir da base e das orientações fornecidas. Caso não tenha conseguido, explique o que tentou.
+**Processo de deploy:**
+
+1. **Escolha da plataforma** – Optou-se pelo **Render** por ser o indicado pela professora  e suportar aplicações Docker.
+2. **Preparação do ambiente** – Foi criado um `Dockerfile` em dois estágios (build com `fpco/stack-build` e runtime com `ubuntu:22.04` para compatibilidade de `glibc`).
+3. **Configuração do Render** – Um arquivo `render.yaml` (blueprint) foi criado na raiz do repositório, com `runtime: docker` e apontando para o `Dockerfile`.
+4. **Problemas enfrentados**:
+   - Inicialmente, o Render rejeitava o blueprint com `services[0].image must be provided` (corrigido mudando de `runtime: image` para `runtime: docker`).
+   - Erro de `stack.yaml.lock` não encontrado – resolvido removendo a referência ao arquivo no `Dockerfile`.
+   - Erro de `GLIBC_2.34 not found` – resolvido trocando a imagem de runtime de `ubuntu:focal` para `ubuntu:22.04`.
+5. **Sucesso** – Após as correções, o build foi concluído e o serviço ficou disponível no link acima. O deploy está funcionando perfeitamente.
 
 ---
 
 ## 7. Resultado final
 
-Apresente o resultado final do trabalho, na forma de GIF animado ou vídeo curto (máximo 60s)
+![demonstracao1](/pokemon_analyzer/gifs/demo1.gif)
 
-Você também pode acrescentar uma breve explicação sobre o que está sendo demonstrado.
+![demonstracao2](/pokemon_analyzer/gifs/demo2.gif)
+
+**O que está sendo demonstrado nos GIF :**
+
+**Adição de Pokémon** – Clica-se em um Pokémon na Pokédex (scroll infinito) e ele é adicionado ao time à esquerda, com sprite oficial.
+
+**Remoção de Pokémon** – Remove-se um membro do time com o botão "REMOVER".
+
+**Limpeza do time** – Botão "LIMPAR" remove todos os Pokémon.
+
+**Análise do time** – Ao clicar em "ANALISAR", o sistema:
+   - Mostra a cobertura percentual do time (barra animada).
+   - Lista os tipos não cobertos.
+   - Exibe, para cada Pokémon, suas fraquezas e resistências (com multiplicadores 4x, 2x, 0.5x, 0.25x).
+   - Apresenta uma sugestão de novo membro (tipo, motivo e exemplos de Pokémon).
 
 ---
 
@@ -173,7 +196,7 @@ Caso: Quando tentei usar jsonData com TeamRequest, a IA afirmou que funcionaria,
 Como corrigi: Renomeei o campo para team e adaptei o Logic.hs e Api.hs para usar name e types. Além disso, substituí jsonData por eitherDecode manual com logs detalhados.
 
 ### 8.4 Comentário pessoal sobre o processo envolvendo IA
-o uso da IA foi de grande ajuda para acelerar a escrita da tabela de efetividades e para a estrutura do frontend, mas em questões expecificas do Haskell a IA forneceu respostas erradas e incompletas fazendo com que o trabalho demorace mais que o necessario, depois de perceber os erros principalmente nas partes de tratamento como ByteString vs Text no Scotty eu preferi usar a IA como meio para fazer coisas repitidas mas na parte de codigo bruta acabei usando o ghci para depurar o codigo e achar erros 
+o uso da IA foi de grande ajuda para acelerar a escrita da tabela de efetividades e para a estrutura do frontend, mas em questões específicas do Haskell a IA forneceu respostas erradas e incompletas fazendo com que o trabalho demorace mais que o necessario, depois de perceber os erros principalmente nas partes de tratamento como ByteString vs Text no Scotty eu preferi usar a IA como meio para fazer coisas repitidas mas na parte de codigo bruta acabei usando o ghci para depurar o codigo e achar erros 
 
 
 
